@@ -4,7 +4,9 @@ import UserSetterContext from '../context/UserSetterContext';
 
 
 function UserProvider({children}){
-    const [currentUser, setCurrentUser] = useState(null);
+    const user = JSON.parse(sessionStorage.getItem("currentUser"));
+    const [currentUser, setCurrentUser] = useState(user);
+
 
     return(
         <UserContext value={currentUser}>

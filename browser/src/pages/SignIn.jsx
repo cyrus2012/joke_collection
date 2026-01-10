@@ -15,21 +15,25 @@ function SignIn(){
     async function askAuthentication(event){
         event.preventDefault();
         
-        const result = await axios.post("http://localhost:6500/login", {username: name, password:password});
+        try{
+            const result = await axios.post("http://localhost:6500/login", {username: name, password:password});
 
-        setName("");
-        setPassword("");
-        setError(null);
-        
-        if(result.data.status.code == 200){
-            console.log(result.data.data);
-            //same loginstatus and info in some place;
-            //console.log("login success");
-            setUser({user: result.data.data});
-            navigate("/");
-        }else{
-            console.log(result.data.status.message);
-            setError(result.data.status.message);
+            setName("");
+            setPassword("");
+            setError(null);
+            
+            if(result.data.status.code == 200){
+                console.log(result.data.data);
+                sessionStorage.setItem("currentUser", JSON.stringify(result.data.data));
+                setUser(result.data.data);
+                navigate("/");
+            }else{
+                console.log(result.data.status.message);
+                setError(result.data.status.message);
+            }
+        }catch(err){
+            console.log(err);
+            setError("Server does not response.");
         }
               
     }

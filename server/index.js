@@ -38,7 +38,12 @@ app.post("/login", (req, res) => {
     if(req.body.password != user.password )
         return res.sendResult(null, 400, "incorrect password");
 
-    return res.sendResult(user.username, 200, "login success");
+    const reply = {
+        username: user.username,
+        sessionId: "wd323d"
+    }
+
+    return res.sendResult(reply, 200, "login success");
 });
 
 
