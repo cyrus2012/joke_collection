@@ -11,7 +11,11 @@
   "description": "",
   "dependencies": {
     "body-parser": "^2.2.2",
+    "config": "^4.1.1",
     "cors": "^2.8.5",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0",
+    "pg": "^8.16.3"
   }
 }

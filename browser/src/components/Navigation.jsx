@@ -22,7 +22,7 @@ function Navigation(){
                 {!currentUser && <li><Link to="/signup">Sign Up</Link></li>}
                 {!currentUser && <li><Link to="/signin">Sign In</Link></li>}
                 
-                {currentUser && <li><Link to="/signin">Profile</Link></li>}
+                {currentUser && <li><Link to="/savedlist">Saved</Link></li>}
                 {currentUser && <li><Link onClick={signOut}>Sign Out</Link></li>}
 
             </ul>

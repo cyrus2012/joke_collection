@@ -1,0 +1,11 @@
+{
+    "postgres_config":{
+        "user": "postgres",
+        "password": "123456",
+        "host": "127.0.0.1",
+        "port": 5432,
+        "database": "joke_collection",
+        "max":10
+    }
+
+}
