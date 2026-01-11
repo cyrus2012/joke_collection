@@ -2,8 +2,11 @@ import express from "express";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import db from "../storage/db.js";
+import bcrypt from "bcrypt";
 
 const router = express.Router();
+const saltRounds = 10;
+
 
 passport.use("local", new LocalStrategy(async function verify(username, password, cb){
     
@@ -12,11 +15,19 @@ passport.use("local", new LocalStrategy(async function verify(username, password
         if(!record)
             return cb("User does not exist");
 
+        bcrypt.compare(password, record.password, function(err, result){
+            if(err){
+                console.error(err);
+                return cb("server has problem.");
+            }
 
-        if(password != record.password)
-            return cb("Incorrect password");
+            if(result){
+                return cb(null, record);
+            }
 
-        return cb(null, record);
+            return cb("Incorrect password!");
+
+        });
 
     }catch(err){
         return cb(err);
@@ -49,15 +60,26 @@ router.post("/register", async (req, res, next) => {
 
      try{
         const record = await db.getUserRecordByName(info.username);
+
         if(record)
             return res.sendResult(null, 400, "Username has been used. Please user another name");
 
-        const result = await db.registerUserRecord(info);
+        bcrypt.hash(info.password, saltRounds, async function(err, hash){
 
-        return res.sendResult(result, 200, "register success");
+            if(err){
+                console.error(err);
+                return res.sendResult(null, 500, "server has problem.");
+            }
 
+            info.password = hash;
+            const result = await db.registerUserRecord(info);
+
+            return res.sendResult(result, 200, "register success");
+        });
+        
     }catch(err){
-        return res.sendResult(null, 400, err);
+        console.error(err);
+        return res.sendResult(null, 500, "server has problem.");
     }
 });
 

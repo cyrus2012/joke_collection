@@ -20,6 +20,9 @@ async function query(text, params){
 
 async function getUserRecordByName(name){
     const result = await query("SELECT * FROM users WHERE username=$1", [name]);
+    if(result.rows.length == 0)
+        return null;
+    
     return result.rows[0];
 }
 
