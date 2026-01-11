@@ -56,7 +56,8 @@ function SignIn(){
                 <input type='password' id='password' value={password} onChange={onPasswordChange}></input><br/>
                 <button type='submit' onClick={askAuthentication}>submit</button>
             </form>
-                {error && <p>{error}</p>}
+            
+            {error && <p>{error}</p>}
         </>
     );
 }
