@@ -23,6 +23,14 @@ async function getUserRecordByName(name){
     return result.rows[0];
 }
 
+
+async function registerUserRecord(user){
+    const result = await query("INSERT INTO users (username, password) VALUES ($1, $2) RETURNING username", [user.username, user.password]);
+    //console.log(result);
+    return result.rows[0];
+}
+
+
 async function getJokes(pageNum, pageSize){
     if(!pageNum)
         pageNum = 1;
@@ -42,4 +50,9 @@ async function getJokes(pageNum, pageSize){
     return result.rows;
 }
 
-export default { getUserRecordByName, getJokes };
+
+
+
+
+
+export default { getUserRecordByName, registerUserRecord, getJokes };

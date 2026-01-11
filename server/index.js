@@ -26,6 +26,7 @@ app.use((req, res, next) => {
     next();
 });
 
+//for connection test
 app.get("/", (req, res) => {
     res.sendResult("in home page.", 200, "success");
 });
@@ -33,30 +34,11 @@ app.get("/", (req, res) => {
 
 app.use("/", authRouter);
 
+
+//return error for invalid route
 app.use("/{*splat}", (req, res, next) => {
     return res.sendResult(null, 404, "no api found");
 });
-
-/* 
-app.post("/login", (req, res) => {
-    const user = testStorage.getUserRecordByName(req.body.username);
-
-    if(!user)
-        return res.sendResult(null, 400, "user does not exist");
-
-    if(req.body.password != user.password )
-        return res.sendResult(null, 400, "incorrect password");
-
-    const reply = {
-        id: user.id,
-        username: user.username,
-        sessionId: "wd323d"
-    }
-
-    return res.sendResult(reply, 200, "login success");
-}); 
-*/
-
 
 
 

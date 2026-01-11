@@ -43,4 +43,23 @@ router.post("/login", (req, res, next) => {
 });
 
 
+router.post("/register", async (req, res, next) => {
+
+    const info = req.body;
+
+     try{
+        const record = await db.getUserRecordByName(info.username);
+        if(record)
+            return res.sendResult(null, 400, "Username has been used. Please user another name");
+
+        const result = await db.registerUserRecord(info);
+
+        return res.sendResult(result, 200, "register success");
+
+    }catch(err){
+        return res.sendResult(null, 400, err);
+    }
+});
+
+
 export default router;
