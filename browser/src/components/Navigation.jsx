@@ -2,17 +2,27 @@ import {Link, useNavigate} from 'react-router-dom';
 import { useContext } from 'react';
 import UserContext from '../context/UserContext';
 import UserSetterContext from '../context/UserSetterContext';
-
+import axios from 'axios';
 
 function Navigation(){
 
     const currentUser = useContext(UserContext);
     const setCurrentUser = useContext(UserSetterContext);
+    const navigate = useNavigate();
 
-    function signOut(){
-        setCurrentUser(null);
-        sessionStorage.setItem("currentUser", null);
-        useNavigate("/");
+    async function signOut(event){
+        event.preventDefault();
+
+        try{
+            const result  = await axios.post("http://localhost:6500/logout", {session_id: currentUser.session_id});
+            setCurrentUser(null);
+            sessionStorage.setItem("currentUser", null);
+            navigate("/");
+
+        }catch(err){
+            console.log(err);
+            window.alert("Server has error. Please try again");
+        }
     }
 
     return (
@@ -22,6 +32,7 @@ function Navigation(){
                 {!currentUser && <li><Link to="/signup">Sign Up</Link></li>}
                 {!currentUser && <li><Link to="/signin">Sign In</Link></li>}
                 
+                {currentUser && <li><Link to="/create">add joke</Link></li>}
                 {currentUser && <li><Link to="/savedlist">Saved</Link></li>}
                 {currentUser && <li><Link onClick={signOut}>Sign Out</Link></li>}
 

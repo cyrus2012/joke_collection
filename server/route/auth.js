@@ -13,7 +13,7 @@ passport.use("local", new LocalStrategy(async function verify(username, password
     try{
         const record = await db.getUserRecordByName(username);
         if(!record)
-            return cb("User does not exist");
+            return cb(null, false, "User does not exist");
 
         bcrypt.compare(password, record.password, function(err, result){
             if(err){
@@ -25,7 +25,7 @@ passport.use("local", new LocalStrategy(async function verify(username, password
                 return cb(null, record);
             }
 
-            return cb("Incorrect password!");
+            return cb(null, false, "Incorrect password!");
 
         });
 
@@ -38,10 +38,13 @@ passport.use("local", new LocalStrategy(async function verify(username, password
 
 router.post("/login", (req, res, next) => {
     
-    passport.authenticate("local", function(err, user){
+    passport.authenticate("local", function(err, user, info){
     
         if(err)
             return res.sendResult(null, 400, err);
+
+        if(!user)
+            return res.sendResult(null, 400, info);
 
         const loggedUser = {
             username: user.username,
@@ -49,6 +52,8 @@ router.post("/login", (req, res, next) => {
             session_id: "q1w2e3"
         }
         
+        console.log(`User '${user.username}' has logined.`);
+
         return res.sendResult(loggedUser, 200, "login success");
     })(req, res, next);
 });
@@ -73,7 +78,8 @@ router.post("/register", async (req, res, next) => {
 
             info.password = hash;
             const result = await db.registerUserRecord(info);
-
+            
+            console.log(`User '${info.username}' has been registered.`);
             return res.sendResult(result, 200, "register success");
         });
         
@@ -81,6 +87,15 @@ router.post("/register", async (req, res, next) => {
         console.error(err);
         return res.sendResult(null, 500, "server has problem.");
     }
+});
+
+
+router.post("/logout", (req, res, next) => {
+    
+    console.log(`session_id ${req.body.session_id} has logout.`)
+
+    return res.sendResult(null, 200, "logout success");
+
 });
 
 
