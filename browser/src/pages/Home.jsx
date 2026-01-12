@@ -1,11 +1,11 @@
-import axios from "axios";
+import axiosInstance from "../axiosInstance.js";
 
 
 function Home(){
 
     async function apiCall(){
         //console.log("before axios");
-        const result = await axios.get('http://localhost:6500/');
+        const result = await axiosInstance.get('/');
         console.log(result);
     }
 

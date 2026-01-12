@@ -1,7 +1,8 @@
-import axios from "axios";
+//import axios from "axios";
 import { useState, useContext} from "react";
 import { useNavigate } from "react-router-dom";
 import UserSetterContext from "../context/UserSetterContext";
+import axiosInstance from "../axiosInstance.js";
 
 function SignIn(){
 
@@ -16,18 +17,29 @@ function SignIn(){
         event.preventDefault();
         
         try{
-            const result = await axios.post("http://localhost:6500/login", {username: name, password:password});
+            // const result = await axiosInstance.post("/login", 
+            //     {username: name, password:password}, 
+            //     {   
+            //         headers: {'Content-Type': 'application/json'}, 
+            //         withCredentials:true
+            //     }
+            // );
+            const result = await axiosInstance.post("/login", {username: name, password:password});
+
 
             setName("");
             setPassword("");
             setError(null);
-            
+
+            console.log(result);
+
             if(result.data.status.code == 200){
-                console.log(result.data.data);
+                
                 sessionStorage.setItem("currentUser", JSON.stringify(result.data.data));
                 setUser(result.data.data);
                 navigate("/");
             }else{
+                console.log(result.data);
                 console.log(result.data.status.message);
                 setError(result.data.status.message);
             }

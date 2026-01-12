@@ -2,7 +2,8 @@ import {Link, useNavigate} from 'react-router-dom';
 import { useContext } from 'react';
 import UserContext from '../context/UserContext';
 import UserSetterContext from '../context/UserSetterContext';
-import axios from 'axios';
+//import axios from 'axios';
+import axiosInstance from "../axiosInstance.js"
 
 function Navigation(){
 
@@ -14,7 +15,9 @@ function Navigation(){
         event.preventDefault();
 
         try{
-            const result  = await axios.post("http://localhost:6500/logout", {session_id: currentUser.session_id});
+            //const result  = await axiosInstance.post("/logout", {withCredentials: true});
+            const result  = await axiosInstance.post("/logout");
+            console.log(result);
             setCurrentUser(null);
             sessionStorage.setItem("currentUser", null);
             navigate("/");

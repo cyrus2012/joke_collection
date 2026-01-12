@@ -6,6 +6,9 @@
         "port": 5432,
         "database": "joke_collection",
         "max":10
+    },
+    "session_config":{
+        "secret":"forTest"
     }
 
 }
