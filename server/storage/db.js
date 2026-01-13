@@ -53,9 +53,16 @@ async function getJokes(pageNum, pageSize){
     return result.rows;
 }
 
+async function addJoke(joke){
+
+    const result = await query("INSERT INTO jokes (creator, created_at, title, content, category_id) VALUES ($1, $2, $3, $4, $5) RETURNING id",
+        [joke.creator, joke.created_at, joke.title, joke.content, joke.category_id]);
+
+    return result.rows[0];
+}
 
 
 
 
 
-export default { getUserRecordByName, registerUserRecord, getJokes };
+export default { getUserRecordByName, registerUserRecord, getJokes, addJoke };

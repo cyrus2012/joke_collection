@@ -3,6 +3,7 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import db from "../storage/db.js";
 import bcrypt from "bcrypt";
+import statusCode from "../config/statusCode.js";
 
 const router = express.Router();
 const saltRounds = 10;
@@ -65,11 +66,11 @@ router.post("/login", (req, res, next) => {
 router.post("/login", passport.authenticate("local",{failureRedirect:"/loginfail", failureMessage:true}),
     (req, res, next) => {
     
-        console.log(req.session);
+        //console.log(req.session);
         console.log(`User '${req.user.username}' has logined.`);
-        console.log(req.sessionID);
+        //console.log(req.sessionID);
 
-        return res.sendResult(req.user.username, 200, "login success");
+        return res.sendResult(req.user.username, statusCode.success, "login success");
     }
 );
 
@@ -80,10 +81,10 @@ router.get("/loginfail", (req, res, next) => {
     if(req.session.messages){
         const msg = req.session.messages[0];
         req.session.messages = [];
-        return res.sendResult(null, 400, msg);
+        return res.sendResult(null, statusCode.requestFail, msg);
     }
 
-    return res.sendResult(null, 400, "login fail. Please try again");
+    return res.sendResult(null, statusCode.requestFail, "login fail. Please try again");
 });
 
 
@@ -95,40 +96,40 @@ router.post("/register", async (req, res, next) => {
         const record = await db.getUserRecordByName(info.username);
 
         if(record)
-            return res.sendResult(null, 400, "Username has been used. Please user another name");
+            return res.sendResult(null, statusCode.requestFail, "Username has been used. Please user another name");
 
         bcrypt.hash(info.password, saltRounds, async function(err, hash){
 
             if(err){
                 console.error(err);
-                return res.sendResult(null, 500, "server has problem.");
+                return res.sendResult(null, statusCode.serverProblem, "server has problem.");
             }
 
             info.password = hash;
             const result = await db.registerUserRecord(info);
             
             console.log(`User '${info.username}' has been registered.`);
-            return res.sendResult(result, 200, "register success");
+            return res.sendResult(result, statusCode.success, "register success");
         });
         
     }catch(err){
         console.error(err);
-        return res.sendResult(null, 500, "server has problem.");
+        return res.sendResult(null, statusCode.serverProblem, "server has problem.");
     }
 });
 
 
 router.post("/logout", (req, res, next) => {
     if(!req.isAuthenticated())
-        return res.sendResult(null, 200, "user has been logout");
+        return res.sendResult(null, statusCode.success, "user has been logout");
 
-    console.log(`session_id ${req.user.username} has logout.`)
+    console.log(`User ${req.user.username} has logout.`)
 
     req.logout(function(err) {
         if (err) { return next(err); }
 
         console.log(req.session);
-        return res.sendResult(null, 200, "logout success");
+        return res.sendResult(null, statusCode.success, "logout success");
     });
 
 });
@@ -138,7 +139,6 @@ passport.serializeUser(function(user, cb) {
     return cb(null, {
       id: user.id,
       username: user.username,
-      session_id:"w2e3r4"
     });
   });
 });

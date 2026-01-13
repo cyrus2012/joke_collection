@@ -3,9 +3,11 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import testStorage from "./storage/testStorage.js";
 import authRouter from "./route/auth.js";
+import jokeRouter from "./route/joke.js";
 import session from "express-session";
 import config from "config";
 import passport from "passport";
+import statusCode from "./config/statusCode.js";
 
 const sessionConfig = config.get("session_config");
 
@@ -34,7 +36,7 @@ app.use(session({
 app.use(passport.authenticate('session'));
 
 
-
+//To format response data format.
 app.use((req, res, next) => {
     res.sendResult = (data, statusCode, message) => {
         return res.json({
@@ -54,27 +56,18 @@ app.use((req, res, next) => {
 app.get("/", (req, res) => {
     console.log(req.session);
     console.log(req.sessionID);
-    res.sendResult("in home page.", 200, "success");
+    res.sendResult("in home page.", statusCode.success, "success");
 });
 
 
 app.use("/", authRouter);
+app.use("/", jokeRouter);
 
-app.get("/savedjokes", (req, res, next) => {
-    console.log(req.session);
-    console.log(req.sessionID);
-
-    if(!req.isAuthenticated())
-        return res.sendResult(null, 400, "Please sign in account first.");
-
-    return res.sendResult("YOu get the list", 200, "success");
-    
-});
 
 
 //return error for invalid route
 app.use("/{*splat}", (req, res, next) => {
-    return res.sendResult(null, 404, "no api found");
+    return res.sendResult(null, statusCode.notFound, "no api found");
 });
 
 

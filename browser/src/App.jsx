@@ -8,6 +8,9 @@ import PageNotFound from './pages/PageNotFound.jsx';
 import SavedList from './pages/SavedList.jsx';
 import RegisterSuccess from './pages/RegisterSuccess.jsx';
 import CreateJoke from './pages/CreateJoke.jsx';
+import MyJokes from './pages/MyJoke.jsx';
+import "./App.css";
+
 
 function App() {
 
@@ -23,6 +26,7 @@ function App() {
           <Route path="/signup/success" element={<RegisterSuccess />} />
           <Route path="/create" element={<CreateJoke />} />
           <Route path="/savedlist" element={<SavedList />} />
+          <Route path="/myjokes" element={<MyJokes />} />
           <Route path="/*" element={<PageNotFound />} />
         </Routes>
       </BrowserRouter>

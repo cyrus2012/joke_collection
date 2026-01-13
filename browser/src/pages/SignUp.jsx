@@ -14,7 +14,20 @@ function SignUp(){
 
     async function registerUser(event){
         event.preventDefault();
-        
+        event.target.disabled = true;
+
+        if(name == ""){
+            event.target.disabled = false;
+            setError("Please enter username!");
+            return;
+        }
+
+        if(password == ""){
+            event.target.disabled = false;
+            setError("Please enter password!");
+            return;
+        }
+
         try{
             const result = await axios.post("http://localhost:6500/register", {username: name, password:password});
 
@@ -26,10 +39,12 @@ function SignUp(){
                 console.log("user registration success");
                 navigate("/signup/success");
             }else{
+                event.target.disabled = false;
                 console.log(result.data.status.message);
                 setError(result.data.status.message);
             }
         }catch(err){
+            event.target.disabled = false;
             console.log(err);
             setError("Server does not response.");
         }
@@ -46,18 +61,17 @@ function SignUp(){
 
 
     return(
-        <>
-            <h1>Sign Up</h1>
-            <form>
-                <label htmlFor='username'>username</label><br/>
-                <input type='text' id='username' onChange={onNameChange}></input><br/>
-                <label htmlFor='password'>password</label><br/>
-                <input type='password' id='password' onChange={onPasswordChange}></input><br/>
-                <button type='submit' onClick={registerUser}>submit</button>
+        <div className="border border-3 border-info mx-auto p-4 mt-5 signDiv">
+            <form className="mx-auto signForm">
+                <h1 className="text-center">Sign Up</h1>
+                <label htmlFor='username'>Username</label><br/>
+                <input type='text' id='username' autoFocus className="w-100 p-1" onChange={onNameChange}></input><br/>
+                <label htmlFor='password' className="mt-3">Password</label><br/>
+                <input type='password' id='password' className="w-100 p-1" onChange={onPasswordChange}></input><br/>
+                <button type='submit' onClick={registerUser} className="mt-4 btn btn-primary">Submit</button>
+                {error && <p className="mt-3 loginError">{error}</p>}
             </form>
-
-            {error && <p>{error}</p>}
-        </>
+        </div>
     );
 }
 

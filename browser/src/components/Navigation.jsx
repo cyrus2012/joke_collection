@@ -1,4 +1,4 @@
-import {Link, useNavigate} from 'react-router-dom';
+import { NavLink, Link, useNavigate} from 'react-router-dom';
 import { useContext } from 'react';
 import UserContext from '../context/UserContext';
 import UserSetterContext from '../context/UserSetterContext';
@@ -24,21 +24,22 @@ function Navigation(){
 
         }catch(err){
             console.log(err);
-            window.alert("Server has error. Please try again");
+            window.alert("Server has error.");
+            navigate("/");
         }
     }
 
     return (
-        <nav>
-            <Link to="/">Joke Collection</Link>
-            <ul>
-                {!currentUser && <li><Link to="/signup">Sign Up</Link></li>}
-                {!currentUser && <li><Link to="/signin">Sign In</Link></li>}
+        <nav className="d-flex justify-content-between px-3">
+            <NavLink to="/" className="nav-link align-self-center">Joke Collection</NavLink>
+            <ul className="nav justify-content-end">
+                {!currentUser && <li className="nav-item"><NavLink to="/signup" className="nav-link" >Sign Up</NavLink></li>}
+                {!currentUser && <li className="nav-item"><NavLink to="/signin" className="nav-link" >Sign In</NavLink></li>}
                 
-                {currentUser && <li><Link to="/create">add joke</Link></li>}
-                {currentUser && <li><Link to="/savedlist">Saved</Link></li>}
-                {currentUser && <li><Link onClick={signOut}>Sign Out</Link></li>}
-
+                {currentUser && <li className="nav-item"><NavLink to="/create" className="nav-link">Add joke</NavLink></li>}
+                {currentUser && <li className="nav-item"><NavLink to="/myjokes" className="nav-link">My jokes</NavLink></li>}
+                {currentUser && <li className="nav-item"><NavLink to="/savedlist" className="nav-link">Saved jokes</NavLink></li>}
+                {currentUser && <li className="nav-item"><NavLink onClick={signOut} className="nav-link">Sign Out</NavLink></li>}
             </ul>
         </nav>
     );
