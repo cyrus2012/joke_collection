@@ -21,7 +21,7 @@ CREATE TABLE category(
 
 );
 
-CREATE TABLE favourite(  
+CREATE TABLE bookmark(  
     user_id int NOT NULL,
     joke_id int NOT NULL
 

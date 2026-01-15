@@ -37,7 +37,9 @@ function CreateJoke(){
         }
 
         try{
-            const result = await axiosInstance.post("/create", {title: title, content: content});
+            const result = await axiosInstance.post("/create", {
+                data:{title: title, content: content}
+            });
             setTitle("");
             setContent("");
             setError(null);

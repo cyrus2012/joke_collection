@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState, useContext} from "react";
 import { useNavigate } from "react-router-dom";
 import UserSetterContext from "../context/UserSetterContext";
+import statusCode from "../statusCode.js";
 
 function SignUp(){
 
@@ -35,7 +36,7 @@ function SignUp(){
             setPassword("");
             setError(null);
             
-            if(result.data.status.code == 200){
+            if(result.data.status.code == statusCode.success){
                 console.log("user registration success");
                 navigate("/signup/success");
             }else{

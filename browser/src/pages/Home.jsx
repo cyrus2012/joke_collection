@@ -1,25 +1,57 @@
+import { useState } from "react";
 import axiosInstance from "../axiosInstance.js";
-import JokePost from "../components/JokePost.jsx";
+import statusCode from "../statusCode.js";
+import GeneralPost from "../components/GeneralPost.jsx";
 
 function Home(){
 
-    async function apiCall(){
+    const [jokes, setJokes] = useState(null);
+
+    let pageNumber = 1, pageSize = 10;
+
+    async function getAllJokes(){
         //console.log("before axios");
-        const result = await axiosInstance.get('/');
-        console.log(result);
+        try{
+            const result = await axiosInstance.get('/jokes', {
+                params:{pageNumber: pageNumber, pageSize: pageSize}
+            });
+            const recipt = result.data; 
+
+            if(recipt.status.code == statusCode.success){
+                if(recipt.data.length == 0){
+                    setJokes(<h2>No Jokes in database.</h2>);
+                }else{
+                    const jokesList = recipt.data.map((element) => {
+                        return <GeneralPost className="mt-3" key={element.id} id={element.id} title={element.title} content={element.content}/> ;
+                    });
+
+                    setJokes(jokesList);
+                }
+            }else{
+                setJokes(<h2>{recipt.status.message}</h2>);
+            }
+
+
+        }catch(err){
+            console.error(err);
+        }
+                
     }
 
-
+/*
     const jokeList = [];
     for(let i = 0; i < 5; i++){
         jokeList.push(<JokePost className="mt-3" title="dsfds" content="gfsdgdsfsdfsd"/>);
     }
-    
-
+*/    
+    if(!jokes){
+        getAllJokes();
+    }
+    //apiCall();
 
     return (
         <div className="container">
-            {jokeList}
+            {jokes}
         </div>
     )
 

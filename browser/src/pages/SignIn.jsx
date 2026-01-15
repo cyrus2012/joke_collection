@@ -3,6 +3,7 @@ import { useState, useContext} from "react";
 import { useNavigate } from "react-router-dom";
 import UserSetterContext from "../context/UserSetterContext";
 import axiosInstance from "../axiosInstance.js";
+import statusCode from "../statusCode.js";
 
 function SignIn(){
 
@@ -48,7 +49,7 @@ function SignIn(){
 
             console.log(result);
 
-            if(result.data.status.code == 200){
+            if(result.data.status.code == statusCode.success){
                 
                 sessionStorage.setItem("currentUser", JSON.stringify(result.data.data));
                 setUser(result.data.data);

@@ -42,16 +42,40 @@ async function getJokes(pageNum, pageSize){
         pageNum = 1;
 
     if(!pageSize)
-        pageSize = 100;
+        pageSize = 30;
 
     if(pageSize < 0)
-        pageSize = 100;
+        pageSize = 30;
 
     const offset = (pageNum - 1) * pageSize;
 
     const result = await query("SELECT * FROM jokes ORDER BY id DESC LIMIT $1 OFFSET $2 ", [pageSize, offset]);
     return result.rows;
 }
+
+
+async function getJokesByCreator(creator_id, pageNum, pageSize){
+    if(!creator_id)
+        return null;
+
+    if(!pageNum)
+        pageNum = 1;
+    
+    if(pageNum < 0)
+        pageNum = 1;
+
+    if(!pageSize)
+        pageSize = 30;
+
+    if(pageSize < 0)
+        pageSize = 30;
+
+    const offset = (pageNum - 1) * pageSize;
+
+    const result = await query("SELECT * FROM jokes WHERE creator= $1 ORDER BY id DESC LIMIT $2 OFFSET $3 ", [creator_id, pageSize, offset]);
+    return result.rows;
+}
+
 
 async function addJoke(joke){
 
@@ -62,7 +86,25 @@ async function addJoke(joke){
 }
 
 
+async function addBookmark(user_id, joke_id){
+    const result = await query("INSERT INTO bookmark (user_id, joke_id) VALUES ($1, $2)",
+        [user_id, joke_id]);
+    
+    if(result.rowCount > 0)
+        return true;
+
+    return false;
+    
+}
 
 
+async function deleteBookmark(user_id, joke_id){
+    const result = await query("DELETE FROM bookmark WHERE user_id = $1 AND joke_id = $2",
+        [user_id, joke_id]);
+    
+        
+    
+    return true;
+}
 
-export default { getUserRecordByName, registerUserRecord, getJokes, addJoke };
+export default { getUserRecordByName, registerUserRecord, getJokes, addJoke, getJokesByCreator, addBookmark, deleteBookmark };
