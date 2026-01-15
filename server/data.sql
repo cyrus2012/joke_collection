@@ -12,7 +12,7 @@ CREATE TABLE jokes(
     created_at DATE NOT NULL,
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
-    category_id int NOT NULL
+    category_id int
 );
 
 CREATE TABLE category(  

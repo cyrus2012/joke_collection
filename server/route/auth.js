@@ -128,7 +128,6 @@ router.post("/logout", (req, res, next) => {
     req.logout(function(err) {
         if (err) { return next(err); }
 
-        console.log(req.session);
         return res.sendResult(null, statusCode.success, "logout success");
     });
 

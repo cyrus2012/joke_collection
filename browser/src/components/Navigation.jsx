@@ -29,10 +29,11 @@ function Navigation(){
         }
     }
 
+    /*
     return (
-        <nav className="d-flex justify-content-between px-3">
+        <nav className="d-flex justify-content-between p-2">
             <NavLink to="/" className="nav-link align-self-center">Joke Collection</NavLink>
-            <ul className="nav justify-content-end">
+            <ul className="nav justify-content-end nav-pills">
                 {!currentUser && <li className="nav-item"><NavLink to="/signup" className="nav-link" >Sign Up</NavLink></li>}
                 {!currentUser && <li className="nav-item"><NavLink to="/signin" className="nav-link" >Sign In</NavLink></li>}
                 
@@ -43,6 +44,29 @@ function Navigation(){
             </ul>
         </nav>
     );
+    */
+    return (
+        <nav className="navbar navbar-expand-sm text-bg-primary" data-bs-theme="dark">
+            <div className="container-fluid">
+                <NavLink to="/" className="navbar-brand">Joke Collection</NavLink>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div className="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                    <ul className="navbar-nav ">
+                        {!currentUser && <li className="nav-item"><NavLink to="/signup" className="nav-link" >Sign Up</NavLink></li>}
+                        {!currentUser && <li className="nav-item"><NavLink to="/signin" className="nav-link" >Sign In</NavLink></li>}
+                        
+                        {currentUser && <li className="nav-item"><NavLink to="/create" className="nav-link">Add joke</NavLink></li>}
+                        {currentUser && <li className="nav-item"><NavLink to="/myjokes" className="nav-link">My jokes</NavLink></li>}
+                        {currentUser && <li className="nav-item"><NavLink to="/savedlist" className="nav-link">Saved jokes</NavLink></li>}
+                        {currentUser && <li className="nav-item"><NavLink to="#" onClick={signOut} className="nav-link">Sign Out</NavLink></li>}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    );
+
 }
 
 export default Navigation;

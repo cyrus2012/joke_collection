@@ -7,6 +7,8 @@ function CreateJoke(){
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [error, setError] = useState(null);
+    const [isUpload, setIsUpload] = useState(false);
+
     const navigate = useNavigate();
 
     function onTitleChange(event){
@@ -20,16 +22,16 @@ function CreateJoke(){
 
     async function submitNewJoke(event){
         event.preventDefault();
-        event.target.disabled = true;
+        setIsUpload(true);
 
         if(title == ""){
-            event.target.disabled = false;
+            setIsUpload(false);
             setError("title cannot be empty.");
             return;
         }
 
         if(content == ""){
-            event.target.disabled = false;
+            setIsUpload(false);
             setError("content cannot be empty.");
             return;
         }
@@ -44,25 +46,32 @@ function CreateJoke(){
                 navigate("/myjokes");
 
             }else{
-                event.target.disabled = false;
+                setIsUpload(false);
                 setError(result.data.status.message);
             }
 
         }catch(err){
-            event.target.disabled = false;
+            setIsUpload(false);
             setError(result.data.status.message);
         }
     }
 
     return(
-        <div>
-            <form className="p-3 mx-auto">
+        <div className=" d-flex justify-content-center">
+            <form className="container p-3 mx-auto">
                 <h1 className="text-center">Create a Joke</h1>
                 <label htmlFor="title">Title:</label><br />
-                <input type='text' size="80" className="mw-100" id='title' autoFocus value={title} onChange={onTitleChange}></input><br/>
+                <input type='text' className="w-100" id='title' autoFocus value={title} onChange={onTitleChange}></input><br/>
                 <label htmlFor="content" className="mt-3">Content:</label><br />
-                <textarea rows="10" cols="80" className="mw-100" id='content' value={content} onChange={onContentChange}></textarea><br/>
-                <button type='submit' className="mt-4 btn btn-primary" onClick={submitNewJoke}>submit</button>
+                <textarea rows="16" className="w-100" id='content' value={content} onChange={onContentChange}></textarea><br/>
+                {isUpload? 
+                    <button class="mt-4 btn btn-primary" disabled>
+                        <span class="spinner-border spinner-border-sm"></span>
+                        Loading..
+                    </button>
+                    :
+                    <button type='submit' className="mt-4 btn btn-primary" onClick={submitNewJoke}>submit</button>
+                }
                 {error && <p className="mt-3 loginError">{error}</p>}
             </form>
 
