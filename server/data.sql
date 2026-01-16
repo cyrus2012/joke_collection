@@ -23,8 +23,8 @@ CREATE TABLE category(
 
 CREATE TABLE bookmark(  
     user_id int NOT NULL,
-    joke_id int NOT NULL
-
+    joke_id int NOT NULL,
+    PRIMARY KEY(user_id, joke_id)
 );
 
 INSERT INTO category(name) VALUES('粵語');

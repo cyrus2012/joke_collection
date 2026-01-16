@@ -20,7 +20,7 @@ nav{
 }
 
 .naviMenuItem{
-    float:left
+    float:left;
     display: block;
     text-align: center;
     padding: 16px;

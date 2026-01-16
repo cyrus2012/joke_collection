@@ -3,9 +3,11 @@ import axiosInstance from "../axiosInstance.js";
 import statusCode from "../statusCode.js";
 import GeneralPost from "../components/GeneralPost.jsx";
 
+
 function Home(){
 
     const [jokes, setJokes] = useState(null);
+    
 
     let pageNumber = 1, pageSize = 10;
 
@@ -21,8 +23,13 @@ function Home(){
                 if(recipt.data.length == 0){
                     setJokes(<h2>No Jokes in database.</h2>);
                 }else{
+                    //console.log(recipt);
                     const jokesList = recipt.data.map((element) => {
-                        return <GeneralPost className="mt-3" key={element.id} id={element.id} title={element.title} content={element.content}/> ;
+                        const isBookmarked = element.user_id? true : false;
+                        return (
+                            <GeneralPost className="mt-3" key={element.id} id={element.id}
+                                title={element.title} content={element.content} isBookmarked={isBookmarked}/>
+                        );
                     });
 
                     setJokes(jokesList);
@@ -51,6 +58,7 @@ function Home(){
         getAllJokes();
     }
     //apiCall();
+
 
     return (
         <div className="container">

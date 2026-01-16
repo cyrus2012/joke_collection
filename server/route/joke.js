@@ -7,18 +7,29 @@ import statusCode from "../config/statusCode.js";
 const router = express.Router();
 
 
-
+/**
+ *  query (optional)
+ *  { Integer } pageNum
+ *  { Integer } pageSize
+ *  It returns a list of jokes stored in database in descending order of the created date and offset by (pageNumber).
+ * 
+ * 
+ * 
+ * If the client has logined, it 
+ */
 router.get("/jokes", async (req, res, next) => {
     
     let jokes;
+    let userId = null;
+
+    if(req.isAuthenticated())
+        userId = req.user.id;
+
     try{
-        if(req.query){
-            const pageNum = req.query.pageNumber;
-            const pageSize = req.query.pageSize;
-            jokes = await db.getJokes(pageNum, pageSize);
-        }else{
-            jokes = await db.getJokes();
-        }
+
+        const pageNum = req.query?.pageNumber? req.query.pageNumber: 1;
+        const pageSize = req.query?.pageSize? req.query.pageSize: 30;
+        jokes = await db.getJokes(pageNum, pageSize, userId);
 
         return res.sendResult(jokes, statusCode.success, "Success");
 
@@ -39,13 +50,11 @@ router.get("/myjokes", async(req, res, next) => {
     const user_id = req.user.id;
 
     try{
-        if(req.query){
-            const pageNum = req.query.pageNumber;
-            const pageSize = req.query.pageSize;
-            jokes = await db.getJokesByCreator(user_id, pageNum, pageSize);
-        }else{
-            jokes = await db.getJokesByCreator(user_id);
-        }
+
+        const pageNum = req.query?.pageNumber? req.query.pageNumber: 1;
+        const pageSize = req.query?.pageSize? req.query.pageSize: 30;
+        jokes = await db.getJokesByCreator(user_id, pageNum, pageSize);
+  
 
         return res.sendResult(jokes, statusCode.success, "Success");
 
@@ -77,6 +86,7 @@ router.post("/savedjokes", async (req, res, next) => {
         const result = await db.addBookmark(req.user.id, req.body.jokeId);
         return res.sendResult(null, statusCode.success, "success");
     }catch(err){
+        console.error(err);
         return res.sendResult(null, statusCode.serverProblem, "Database has problem. Cannot bookmark the joke.");
     }
     

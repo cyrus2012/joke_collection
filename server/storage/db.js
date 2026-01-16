@@ -34,7 +34,7 @@ async function registerUserRecord(user){
 }
 
 
-async function getJokes(pageNum, pageSize){
+async function getJokes(pageNum, pageSize, userId){
     if(!pageNum)
         pageNum = 1;
     
@@ -49,7 +49,15 @@ async function getJokes(pageNum, pageSize){
 
     const offset = (pageNum - 1) * pageSize;
 
-    const result = await query("SELECT * FROM jokes ORDER BY id DESC LIMIT $1 OFFSET $2 ", [pageSize, offset]);
+    let result;
+    if(userId){
+         result = await query("SELECT user_id, id, title, content FROM jokes " +
+                    "LEFT JOIN (SELECT * FROM bookmark WHERE user_id = $1) ON joke_id=jokes.id " +
+                    "ORDER BY jokes.id DESC LIMIT $2 OFFSET $3 ", 
+                    [userId, pageSize, offset]);
+    }else{
+        result = await query("SELECT * FROM jokes ORDER BY id DESC LIMIT $1 OFFSET $2 ", [pageSize, offset]);
+    }
     return result.rows;
 }
 
@@ -114,4 +122,37 @@ async function deleteBookmark(user_id, joke_id){
     return true;
 }
 
-export default { getUserRecordByName, registerUserRecord, getJokes, addJoke, deleteJoke, getJokesByCreator, addBookmark, deleteBookmark };
+async function getJokesWithBookmark(pageNum, pageSize, user_id){
+
+    if(!user_id)
+        return null;
+
+    if(!pageNum)
+        pageNum = 1;
+    
+    if(pageNum < 0)
+        pageNum = 1;
+
+    if(!pageSize)
+        pageSize = 30;
+
+    if(pageSize < 0)
+        pageSize = 30;
+
+    const offset = (pageNum - 1) * pageSize;
+
+    //Before joining 2 tables, first filter table bookmark where bookmark.user_id = user_id(argument)
+    //with command "AND"
+    const result = await query("SELECT user_id, id, title, content FROM jokes " +
+        "LEFT JOIN (SELECT * FROM bookmark WHERE user_id = $1) ON joke_id=jokes.id " +
+        "ORDER BY jokes.id DESC LIMIT $2 OFFSET $3 ", 
+        [user_id, pageSize, offset]);
+
+    
+    //console.log(result);
+    
+    return result.rows;
+}
+
+
+export default { getUserRecordByName, registerUserRecord, getJokes, addJoke, deleteJoke, getJokesByCreator, addBookmark, deleteBookmark, getJokesWithBookmark };

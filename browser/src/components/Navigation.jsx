@@ -17,7 +17,7 @@ function Navigation(){
         try{
             //const result  = await axiosInstance.post("/logout", {withCredentials: true});
             const result  = await axiosInstance.post("/logout");
-            console.log(result);
+            //console.log(result.data);
             setCurrentUser(null);
             sessionStorage.setItem("currentUser", null);
             navigate("/");

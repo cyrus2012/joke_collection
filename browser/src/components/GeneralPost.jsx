@@ -1,9 +1,14 @@
+import { useContext } from "react";
 import JokeArticle from "./JokeArticle";
 import axiosInstance from "../axiosInstance.js";
 import statusCode from "../statusCode";
+import UserContext from "../context/UserContext.jsx";
 
 function GeneralPost(props){
 
+    const currentUser = useContext(UserContext);
+
+    let isBookmared = currentUser? props.isBookmarked : false;
 
     async function toggleBookmark(event){
         event.preventDefault();
@@ -11,12 +16,12 @@ function GeneralPost(props){
         const icon = event.target;
         icon.setAttribute("disabled", "disabled");        
 
-        const isBookmarked = icon.classList.contains("bi-bookmark")? false : true;
+        //const isBookmarked = icon.classList.contains("bi-bookmark")? false : true;
         
 
         try{
             let result;
-            if(isBookmarked){
+            if(isBookmared){
                 //unbookmark it
                 console.log("axios send delete /savedjokes");
                 result = await axiosInstance.delete("/savedjokes", {data: { jokeId:props.id }} );
@@ -24,6 +29,7 @@ function GeneralPost(props){
                 if(result.data.status.code == statusCode.success){
                     icon.classList.add("bi-bookmark");
                     icon.classList.remove("bi-bookmark-fill");
+                    isBookmared = false;
                 }else{
                     window.alert(result.data.status.message);
                 }
@@ -36,6 +42,7 @@ function GeneralPost(props){
                 if(result.data.status.code == statusCode.success){
                     icon.classList.add("bi-bookmark-fill");
                     icon.classList.remove("bi-bookmark");
+                    isBookmared = true;
                  }else{
                     window.alert(result.data.status.message);
                 }
@@ -52,7 +59,8 @@ function GeneralPost(props){
     return (
         <div className="d-flex border border-2 border-info border-rounded-2 mt-2 p-2">
             <JokeArticle className="flex-grow-1" id={props.id} title={props.title} content={props.content}/>   
-            <i className="bi bi-bookmark bookmarkIcon" onClick={toggleBookmark} ></i>
+            { isBookmared? <i className="bi bi-bookmark-fill bookmarkIcon" onClick={toggleBookmark} ></i> :
+                    <i className="bi bi-bookmark bookmarkIcon" onClick={toggleBookmark} ></i>}
         </div>
     )
 }

@@ -39,29 +39,6 @@ passport.use("local", new LocalStrategy(async function verify(username, password
 
 }));
 
-/*
-router.post("/login", (req, res, next) => {
-    
-    passport.authenticate("local", function(err, user, info){
-    
-        if(err)
-            return res.sendResult(null, 400, err);
-
-        if(!user)
-            return res.sendResult(null, 400, info);
-
-        const loggedUser = {
-            username: user.username,
-            user_id: user.id,
-            session_id: "q1w2e3"
-        }
-        
-        console.log(`User '${user.username}' has logined.`);
-
-        return res.sendResult(loggedUser, 200, "login success");
-    })(req, res, next);
-});
-*/
 
 router.post("/login", passport.authenticate("local",{failureRedirect:"/loginfail", failureMessage:true}),
     (req, res, next) => {
@@ -75,12 +52,11 @@ router.post("/login", passport.authenticate("local",{failureRedirect:"/loginfail
 );
 
 router.get("/loginfail", (req, res, next) => {
-    console.log(req.session);
-    console.log(req.sessionID);
+    
 
     if(req.session.messages){
         const msg = req.session.messages[0];
-        req.session.messages = [];
+        req.session.messages = [];  //clear the messages in session. Otherwise, the messages will accumulate.
         return res.sendResult(null, statusCode.requestFail, msg);
     }
 
