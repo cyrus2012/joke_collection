@@ -85,6 +85,13 @@ async function addJoke(joke){
     return result.rows[0];
 }
 
+async function deleteJoke(user_id, joke_id){
+
+    const result = await query("DELETE FROM jokes WHERE creator = $1 AND id = $2",
+        [user_id, joke_id]);
+
+    return result.rows[0];
+}
 
 async function addBookmark(user_id, joke_id){
     const result = await query("INSERT INTO bookmark (user_id, joke_id) VALUES ($1, $2)",
@@ -102,9 +109,9 @@ async function deleteBookmark(user_id, joke_id){
     const result = await query("DELETE FROM bookmark WHERE user_id = $1 AND joke_id = $2",
         [user_id, joke_id]);
     
-        
+    //console.log(result);
     
     return true;
 }
 
-export default { getUserRecordByName, registerUserRecord, getJokes, addJoke, getJokesByCreator, addBookmark, deleteBookmark };
+export default { getUserRecordByName, registerUserRecord, getJokes, addJoke, deleteJoke, getJokesByCreator, addBookmark, deleteBookmark };

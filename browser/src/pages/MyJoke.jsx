@@ -1,12 +1,15 @@
 import { useState } from "react";
 import axiosInstance from "../axiosInstance.js";
-import JokePost from "../components/JokeArticle.jsx";
 import statusCode from "../statusCode.js";
+import MyCreatedPost from "../components/MyCreatedPost.jsx";
 
 function MyJokes(){
 
     const [jokes, setJokes] = useState(null);
     let pageNumber = 1, pageSize = 10;
+    
+    let jokesList = [];
+
 
     async function getMyJokes(){
         //console.log("before axios");
@@ -20,10 +23,13 @@ function MyJokes(){
                 if(recipt.data.length == 0){
                     setJokes(<h2>Empty</h2>);
                 }else{
-                    const jokesList = recipt.data.map((element) => {
-                        return <JokePost className="mt-3" key={element.id} title={element.title} content={element.content}/> ;
+                    jokesList = recipt.data.map((element) => {
+                        return (<MyCreatedPost className="mt-3" 
+                            key={element.id} id={element.id} 
+                            title={element.title} content={element.content}
+                            deleteJoke={deleteJoke} />);
                     });
-
+                    
                     setJokes(jokesList);
                 }
             }else{
@@ -37,7 +43,16 @@ function MyJokes(){
                 
     }
 
- 
+    function deleteJoke(jokeId){
+        
+        if(jokesList.length > 0){
+            jokesList = jokesList.filter( (joke) => joke.props.id != jokeId);
+            setJokes(jokesList);
+        }
+
+    }
+
+
     if(!jokes){
         getMyJokes();
     }

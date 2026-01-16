@@ -44,6 +44,9 @@ function Home(){
         jokeList.push(<JokePost className="mt-3" title="dsfds" content="gfsdgdsfsdfsd"/>);
     }
 */    
+
+
+
     if(!jokes){
         getAllJokes();
     }

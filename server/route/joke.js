@@ -70,7 +70,6 @@ router.post("/savedjokes", async (req, res, next) => {
     if(!req.isAuthenticated())
         return res.sendResult(null, statusCode.requestFail, "Please sign in account first.");
 
-    console.log("POST /savedjokes");
     if(!req.body.jokeId)
         return res.sendResult(null, statusCode.requestFail, "Please provide jokeId");
     
@@ -88,10 +87,6 @@ router.delete("/savedjokes", async (req, res, next) => {
         
     if(!req.isAuthenticated())
         return res.sendResult(null, statusCode.requestFail, "Please sign in account first.");
-
-    console.log("DELETE /savedjokes");
-    console.log(req.body);
-    console.log(req);
 
     if(!req.body.jokeId)
         return res.sendResult(null, statusCode.requestFail, "Please provide jokeId");
@@ -135,9 +130,23 @@ router.post("/create", async (req, res, next) => {
         return res.sendResult(null, statusCode.serverProblem, "Cannot add joke. Server has problem!");
     }
 
-
-    
-    
 });
+
+router.delete("/joke", async (req, res, next) => {
+    if(!req.isAuthenticated())
+        return res.sendResult(null, statusCode.requestFail, "Please sign in account first.");
+
+    if(!req.body.jokeId)
+        return res.sendResult(null, statusCode.requestFail, "Please provide jokeId");
+    
+    try{
+        const result = await db.deleteJoke(req.user.id, req.body.jokeId);
+        console.log(`User id ${req.user.id} has deleted joke id ${req.body.jokeId} `);
+        return res.sendResult(null, statusCode.success, "delete joke success");
+    }catch(err){
+        return res.sendResult(null , statusCode.serverProblem, "Database has problem. Cannot unbookmark the joke.");
+    }
+});
+
 
 export default router;

@@ -36,3 +36,17 @@ nav{
 .bookmarkIcon {
     font-size: 2em;
 }
+
+.trashIcon {
+    font-size: 2em;
+}
+
+.trashButton {
+    padding: .25rem;
+    
+}
+
+.trashButton:hover {
+    background-color: gray;
+    color:white;
+}

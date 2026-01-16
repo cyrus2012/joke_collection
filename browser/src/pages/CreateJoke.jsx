@@ -37,9 +37,9 @@ function CreateJoke(){
         }
 
         try{
-            const result = await axiosInstance.post("/create", {
-                data:{title: title, content: content}
-            });
+            const result = await axiosInstance.post("/create", 
+                {title: title, content: content}
+            );
             setTitle("");
             setContent("");
             setError(null);
@@ -67,8 +67,8 @@ function CreateJoke(){
                 <label htmlFor="content" className="mt-3">Content:</label><br />
                 <textarea rows="16" className="w-100" id='content' value={content} onChange={onContentChange}></textarea><br/>
                 {isUpload? 
-                    <button class="mt-4 btn btn-primary" disabled>
-                        <span class="spinner-border spinner-border-sm"></span>
+                    <button className="mt-4 btn btn-primary" disabled>
+                        <span className="spinner-border spinner-border-sm"></span>
                         Loading..
                     </button>
                     :
