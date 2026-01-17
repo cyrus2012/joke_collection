@@ -51,11 +51,14 @@ async function getJokes(pageNum, pageSize, userId){
 
     let result;
     if(userId){
-         result = await query("SELECT user_id, id, title, content FROM jokes " +
+        // get Jokes table with additional 1 column to indicate if a joke is bookmarked by the requested user
+        // before joining tables, first filter bookmark table to get all joke_id bookmarked by the user
+        result = await query("SELECT user_id, id, title, content FROM jokes " +
                     "LEFT JOIN (SELECT * FROM bookmark WHERE user_id = $1) ON joke_id=jokes.id " +
                     "ORDER BY jokes.id DESC LIMIT $2 OFFSET $3 ", 
                     [userId, pageSize, offset]);
     }else{
+
         result = await query("SELECT * FROM jokes ORDER BY id DESC LIMIT $1 OFFSET $2 ", [pageSize, offset]);
     }
     return result.rows;
@@ -122,7 +125,8 @@ async function deleteBookmark(user_id, joke_id){
     return true;
 }
 
-async function getJokesWithBookmark(pageNum, pageSize, user_id){
+
+async function getSavedJokes(user_id, pageNum, pageSize){
 
     if(!user_id)
         return null;
@@ -142,9 +146,8 @@ async function getJokesWithBookmark(pageNum, pageSize, user_id){
     const offset = (pageNum - 1) * pageSize;
 
     //Before joining 2 tables, first filter table bookmark where bookmark.user_id = user_id(argument)
-    //with command "AND"
     const result = await query("SELECT user_id, id, title, content FROM jokes " +
-        "LEFT JOIN (SELECT * FROM bookmark WHERE user_id = $1) ON joke_id=jokes.id " +
+        "RIGHT JOIN (SELECT * FROM bookmark WHERE user_id = $1) ON joke_id=jokes.id " +
         "ORDER BY jokes.id DESC LIMIT $2 OFFSET $3 ", 
         [user_id, pageSize, offset]);
 
@@ -155,4 +158,4 @@ async function getJokesWithBookmark(pageNum, pageSize, user_id){
 }
 
 
-export default { getUserRecordByName, registerUserRecord, getJokes, addJoke, deleteJoke, getJokesByCreator, addBookmark, deleteBookmark, getJokesWithBookmark };
+export default { getUserRecordByName, registerUserRecord, getJokes, addJoke, deleteJoke, getJokesByCreator, addBookmark, deleteBookmark, getSavedJokes };

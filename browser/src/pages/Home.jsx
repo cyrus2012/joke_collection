@@ -19,7 +19,7 @@ function Home(){
             });
             const recipt = result.data; 
 
-            if(recipt.status.code == statusCode.success){
+            if(recipt.statusCode == statusCode.success){
                 if(recipt.data.length == 0){
                     setJokes(<h2>No Jokes in database.</h2>);
                 }else{
@@ -35,7 +35,7 @@ function Home(){
                     setJokes(jokesList);
                 }
             }else{
-                setJokes(<h2>{recipt.status.message}</h2>);
+                setJokes(<h2>{recipt.message}</h2>);
             }
 
 

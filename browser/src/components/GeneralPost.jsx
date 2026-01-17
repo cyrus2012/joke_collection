@@ -26,12 +26,14 @@ function GeneralPost(props){
                 console.log("axios send delete /savedjokes");
                 result = await axiosInstance.delete("/savedjokes", {data: { jokeId:props.id }} );
 
-                if(result.data.status.code == statusCode.success){
+                if(result.data.statusCode == statusCode.success){
                     icon.classList.add("bi-bookmark");
                     icon.classList.remove("bi-bookmark-fill");
                     isBookmared = false;
+                    if(props.removeBookmarkPost)
+                        props.removeBookmarkPost(props.id);
                 }else{
-                    window.alert(result.data.status.message);
+                    window.alert(result.data.message);
                 }
 
             }else{
@@ -39,12 +41,12 @@ function GeneralPost(props){
                 console.log("axios send post /savedjokes");
                 result = await axiosInstance.post("/savedjokes", { jokeId:props.id });
                 
-                if(result.data.status.code == statusCode.success){
+                if(result.data.statusCode == statusCode.success){
                     icon.classList.add("bi-bookmark-fill");
                     icon.classList.remove("bi-bookmark");
                     isBookmared = true;
                  }else{
-                    window.alert(result.data.status.message);
+                    window.alert(result.data.message);
                 }
             }
 

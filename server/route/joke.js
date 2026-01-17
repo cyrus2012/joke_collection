@@ -6,6 +6,8 @@ import statusCode from "../config/statusCode.js";
 
 const router = express.Router();
 
+const DEFAULT_PAGE_NUMBER = 1;
+const DEFAULT_PAGE_SIZE = 30;
 
 /**
  *  query (optional)
@@ -27,8 +29,8 @@ router.get("/jokes", async (req, res, next) => {
 
     try{
 
-        const pageNum = req.query?.pageNumber? req.query.pageNumber: 1;
-        const pageSize = req.query?.pageSize? req.query.pageSize: 30;
+        const pageNum = req.query?.pageNumber? req.query.pageNumber: DEFAULT_PAGE_NUMBER;
+        const pageSize = req.query?.pageSize? req.query.pageSize: DEFAULT_PAGE_SIZE;
         jokes = await db.getJokes(pageNum, pageSize, userId);
 
         return res.sendResult(jokes, statusCode.success, "Success");
@@ -51,8 +53,8 @@ router.get("/myjokes", async(req, res, next) => {
 
     try{
 
-        const pageNum = req.query?.pageNumber? req.query.pageNumber: 1;
-        const pageSize = req.query?.pageSize? req.query.pageSize: 30;
+        const pageNum = req.query?.pageNumber? req.query.pageNumber: DEFAULT_PAGE_NUMBER;
+        const pageSize = req.query?.pageSize? req.query.pageSize: DEFAULT_PAGE_SIZE;
         jokes = await db.getJokesByCreator(user_id, pageNum, pageSize);
   
 
@@ -64,12 +66,25 @@ router.get("/myjokes", async(req, res, next) => {
     }
 });
 
-router.get("/savedjokes", (req, res, next) => {
+router.get("/savedjokes", async (req, res, next) => {
         
     if(!req.isAuthenticated())
         return res.sendResult(null, statusCode.requestFail, "Please sign in account first.");
 
-    return res.sendResult("YOu get the list", statusCode.success, "success");
+     const user_id = req.user.id;
+
+    try{
+        const pageNum = req.query?.pageNumber? req.query.pageNumber: DEFAULT_PAGE_NUMBER;
+        const pageSize = req.query?.pageSize? req.query.pageSize: DEFAULT_PAGE_SIZE;
+        const jokes = await db.getSavedJokes(user_id, pageNum, pageSize);
+  
+
+        return res.sendResult(jokes, statusCode.success, "Success");
+
+    }catch(err){
+        console.error(err);
+        return res.sendResult(null, statusCode.serverProblem, "Server has problem. Cannot retrieve jokes");
+    }
     
 });
 

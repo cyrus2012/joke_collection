@@ -49,16 +49,16 @@ function SignIn(){
 
             console.log(result);
 
-            if(result.data.status.code == statusCode.success){
-                
+            if(result.data.statusCode == statusCode.success){
+
                 sessionStorage.setItem("currentUser", JSON.stringify(result.data.data));
                 setUser(result.data.data);
                 navigate("/");
             }else{
                 event.target.disabled = false;
-                console.log(result.data);
-                console.log(result.data.status.message);
-                setError(result.data.status.message);
+                //console.log(result.data);
+                //console.log(result.data.message);
+                setError(result.data.message);
             }
         }catch(err){
             event.target.disabled = false;

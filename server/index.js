@@ -41,10 +41,8 @@ app.use((req, res, next) => {
     res.sendResult = (data, statusCode, message) => {
         return res.json({
             data:data,
-            status:{
-                code:statusCode,
-                message: message
-            }
+            statusCode:statusCode,
+            message: message
         });
     }
 

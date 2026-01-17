@@ -36,13 +36,13 @@ function SignUp(){
             setPassword("");
             setError(null);
             
-            if(result.data.status.code == statusCode.success){
+            if(result.data.statusCode == statusCode.success){
                 console.log("user registration success");
                 navigate("/signup/success");
             }else{
                 event.target.disabled = false;
-                console.log(result.data.status.message);
-                setError(result.data.status.message);
+                //console.log(result.data.message);
+                setError(result.data.message);
             }
         }catch(err){
             event.target.disabled = false;

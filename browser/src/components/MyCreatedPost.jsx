@@ -15,10 +15,10 @@ function MyCreatedPost(props){
             
             result = await axiosInstance.delete("/joke", {data: { jokeId:props.id }} );
 
-            if(result.data.status.code == statusCode.success){
+            if(result.data.statusCode == statusCode.success){
                 props.deleteJoke(props.id);
             }else{
-                window.alert(result.data.status.message);
+                window.alert(result.data.message);
                 icon.removeAttribute("disabled");
             }
 

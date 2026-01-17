@@ -44,17 +44,17 @@ function CreateJoke(){
             setContent("");
             setError(null);
 
-            if(result.data.status.code == 200){ 
+            if(result.data.statusCode == 200){ 
                 navigate("/myjokes");
 
             }else{
                 setIsUpload(false);
-                setError(result.data.status.message);
+                setError(result.data.message);
             }
 
         }catch(err){
             setIsUpload(false);
-            setError(result.data.status.message);
+            setError(result.data.message);
         }
     }
 
