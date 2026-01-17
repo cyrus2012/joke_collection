@@ -40,6 +40,7 @@ function Home(){
 
 
         }catch(err){
+            setJokes(<h2>"Network Error. Cannot access server."</h2>);
             console.error(err);
         }
                 

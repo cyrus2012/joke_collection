@@ -1,11 +1,11 @@
 import { NavLink, Link, useNavigate} from 'react-router-dom';
 import { useContext } from 'react';
-import UserContext from '../context/UserContext';
-import UserSetterContext from '../context/UserSetterContext';
+import UserContext from '../context/UserContext.jsx';
+import UserSetterContext from '../context/UserSetterContext.jsx';
 //import axios from 'axios';
 import axiosInstance from "../axiosInstance.js"
 
-function Navigation(){
+function NavigationBar(){
 
     const currentUser = useContext(UserContext);
     const setCurrentUser = useContext(UserSetterContext);
@@ -69,4 +69,4 @@ function Navigation(){
 
 }
 
-export default Navigation;
+export default NavigationBar;
