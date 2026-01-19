@@ -83,9 +83,7 @@ router.get("/myjokes", async(req, res, next) => {
     const user_id = req.user.id;
 
     const pageNum = parsePageNumber(req.query?.pageNumber);
-    
     const pageSize = parsePageSize(req.query?.pageSize);
-
 
     try{
 
@@ -105,19 +103,10 @@ router.get("/savedjokes", async (req, res, next) => {
     if(!req.isAuthenticated())
         return res.sendResult(null, statusCode.requestFail, "Please sign in account first.");
 
-     const user_id = req.user.id;
+    const user_id = req.user.id;
 
-    if(Number.isInteger(req.query?.pageNumber))
-        pageNum = req.query.pageNumber;
-    else   
-        return res.sendResult(null, statusCode.requestFail, "Please provide validate page number");
-
-
-    if(Number.isInteger(req.query?.pageSize))
-        pageSize = req.query.pageSize;
-    else
-        return res.sendResult(null, statusCode.requestFail, "Please provide validate page size");
-
+    const pageNum = parsePageNumber(req.query?.pageNumber);
+    const pageSize = parsePageSize(req.query?.pageSize);
 
     try{
         const jokes = await db.getSavedJokes(user_id, pageNum, pageSize);

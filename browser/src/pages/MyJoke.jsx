@@ -31,7 +31,7 @@ function MyJokes(){
                         return (<MyCreatedPost className="mt-3" 
                             key={element.id} id={element.id} 
                             title={element.title} content={element.content}
-                            deleteJoke={deleteJoke} />);
+                            deleteJoke={refreshPage} />);
                     });
                     
                     setJokes(jokesList);
@@ -47,7 +47,7 @@ function MyJokes(){
                 
     }
 
-    function deleteJoke(jokeId){
+    function refreshPage(){
         /*
         if(jokesList.length > 0){
             jokesList = jokesList.filter( (joke) => joke.props.id != jokeId);
@@ -60,7 +60,7 @@ function MyJokes(){
     }
 
 
-    async function getTotalCreatedJokesCount(){
+    async function getMyCreatedJokesCount(){
         try{
             const result = await axiosInstance.get('/jokescount', {params:{type: "created"}});
             
@@ -81,7 +81,7 @@ function MyJokes(){
 
 
     async function setUpTotalPage(pageSize){
-        const jokesCount = await getTotalCreatedJokesCount();
+        const jokesCount = await getMyCreatedJokesCount();
         
         if(jokesCount < 0)
             return;
@@ -102,6 +102,7 @@ function MyJokes(){
 
 
     if(currentPage == 0){
+        console.log("page reloaded");
         setCurrentPage(1);
         setUpTotalPage(DEFAULT_PAGE_SIZE);
         getMyJokes(currentPage, DEFAULT_PAGE_SIZE);
