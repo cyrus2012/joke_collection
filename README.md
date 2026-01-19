@@ -131,7 +131,7 @@ Server only delete the joke which creator is the client. Server always return st
 **body** \
 jokeId - id, assigned by database, that represented the joke \
 **data** \
-null
+null. StatusCode 200 represents the joke has been deleted.
 ![server returns statusCode 200 for result](/screenshot/User_delete_a_joke_with_jokeId.png) \
 
 
@@ -143,3 +143,20 @@ pageSize - Postivie integer. Otherwise **default 5** in server side \
 **data** \
 return a list of jokes object that the client has bookmarked \
 ![server returns a list of jokes object that the client has bookmarked](/screenshot/server_return_bookmarked_jokes.png) \
+
+
+### POST /savedjokes
+Client has to sign in before and provide joke id representing the joke that user want to bookmark \
+**body** \
+jokeId - id, assigned by database, that represented the joke \
+**data** \
+null. StatusCode 200 represents the joke has been bookmarked. \
+![server return statusCode 200 representing the joke has been bookmarked](/screenshot/server_return_statusCode_after_bookmark_a_joke.png) \
+
+### DELETE /savedjokes
+Client has to sign in before and provide joke id representing the joke that user want to cancel the bookmark. The server will only delete (user id, joke id) pair in database *bookmark* table \
+**body** \
+jokeId - id, assigned by database, that represented the joke \
+**data** \
+null. StatusCode 200 represents the server has delete the bookmark record. \
+![server return statusCode 200](/screenshot/server_delete_bookmard_record.png) \

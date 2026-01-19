@@ -149,7 +149,7 @@ router.delete("/savedjokes", async (req, res, next) => {
     if(!req.isAuthenticated())
         return res.sendResult(null, statusCode.requestFail, "Please sign in account first.");
 
-    if(!req.body.jokeId)
+    if(!req.body?.jokeId)
         return res.sendResult(null, statusCode.requestFail, "Please provide jokeId");
     
 
