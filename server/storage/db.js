@@ -158,4 +158,44 @@ async function getSavedJokes(user_id, pageNum, pageSize){
 }
 
 
-export default { getUserRecordByName, registerUserRecord, getJokes, addJoke, deleteJoke, getJokesByCreator, addBookmark, deleteBookmark, getSavedJokes };
+async function getTestJoke(user_id, pageNum, pageSize){
+
+    if(!user_id)
+        return null;
+
+    const offset = (pageNum - 1) * pageSize;
+
+    //Before joining 2 tables, first filter table bookmark where bookmark.user_id = user_id(argument)
+    const result = await query("WITH jokesWithUser AS (SELECT * FROM jokes LEFT JOIN "
+                                + "(SELECT * FROM bookmark WHERE user_id = $1) ON joke_id=jokes.id ORDER BY jokes.id DESC) "
+                                + "SELECT json_build_object('total', max(total), 'results', json_agg(element))"
+                                + "FROM (SELECT count(*) OVER () AS total, row_to_json(jokesWithUser) AS element "
+                                + "FROM jokesWithUser LIMIT 10 OFFSET 0)"
+                    , [user_id]);
+
+    console.log(JSON.parse(result.rows));
+    
+    return JSON.parse(result.rows);
+}
+
+async function getCountOfAllJokes(){
+    const result = await query("SELECT count(*) FROM jokes");
+
+    return result.rows[0];
+}
+
+async function getCountOfcreatededJokes(userId){
+    const result = await query("SELECT count(*) FROM jokes WHERE creator = $1", [userId]);
+
+    return result.rows[0];
+}
+
+async function getCountOfBookmarkedJokes(userId){
+    const result = await query("SELECT count(*) FROM bookmark WHERE user_id = $1", [userId]);
+
+    return result.rows[0];
+}
+
+
+export default { getUserRecordByName, registerUserRecord, getJokes, addJoke, deleteJoke, getJokesByCreator,
+    addBookmark, deleteBookmark, getSavedJokes, getTestJoke, getCountOfAllJokes, getCountOfcreatededJokes, getCountOfBookmarkedJokes };

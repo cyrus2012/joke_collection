@@ -57,12 +57,21 @@ function GeneralPost(props){
         icon.removeAttribute("disabled");
     }
 
-
+/*
     return (
         <div className="d-flex border border-2 border-info border-rounded-2 mt-2 p-2">
             <JokeArticle className="flex-grow-1" id={props.id} title={props.title} content={props.content}/>   
-            { isBookmared? <i className="bi bi-bookmark-fill bookmarkIcon" onClick={toggleBookmark} ></i> :
-                    <i className="bi bi-bookmark bookmarkIcon" onClick={toggleBookmark} ></i>}
+            { isBookmared? <i className="bi bi-bookmark-fill bookmarkIcon " onClick={toggleBookmark} ></i> :
+                    <i className="align-self-start bi bi-bookmark bookmarkIcon" onClick={toggleBookmark} ></i>}
+        </div>
+    )
+*/
+    return (
+        <div className="d-flex border border-2 border-info border-rounded-2 mt-2 p-2">
+            <JokeArticle className="flex-grow-1" id={props.id} title={props.title} content={props.content}/>   
+            
+                <i className={"align-self-start bookmarkIcon bi " + (isBookmared?"bi-bookmark-fill" :"bi-bookmark")}
+                    onClick={toggleBookmark} ></i>
         </div>
     )
 }

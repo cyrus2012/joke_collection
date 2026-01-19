@@ -7,7 +7,36 @@ import statusCode from "../config/statusCode.js";
 const router = express.Router();
 
 const DEFAULT_PAGE_NUMBER = 1;
-const DEFAULT_PAGE_SIZE = 30;
+const DEFAULT_PAGE_SIZE = 5;
+
+
+function isPositiveInteger(string){
+    const regExp = new RegExp("^[1-9][0-9]*$");
+    return regExp.test(string);
+}
+
+function parsePageNumber(string){
+    if(isPositiveInteger(string))
+        return parseInt(string);
+
+    return DEFAULT_PAGE_NUMBER;
+}
+
+function parsePageSize(string){
+        if(isPositiveInteger(string))
+        return parseInt(string);
+
+    return DEFAULT_PAGE_SIZE;
+}
+
+//console.log(isPositiveInteger("1"));    //true
+//console.log(isPositiveInteger("12"));   //true
+//console.log(isPositiveInteger("0"));    //false
+//console.log(isPositiveInteger("01"));   //false
+//console.log(isPositiveInteger("1dfdf"));    //false
+//console.log(isPositiveInteger("sdfds"));    //false
+//console.log(isPositiveInteger("d3g"));  //false
+
 
 /**
  *  query (optional)
@@ -26,11 +55,13 @@ router.get("/jokes", async (req, res, next) => {
 
     if(req.isAuthenticated())
         userId = req.user.id;
-
+ 
+    const pageNum = parsePageNumber(req.query?.pageNumber);
+    
+    const pageSize = parsePageSize(req.query?.pageSize);
+            
     try{
 
-        const pageNum = req.query?.pageNumber? req.query.pageNumber: DEFAULT_PAGE_NUMBER;
-        const pageSize = req.query?.pageSize? req.query.pageSize: DEFAULT_PAGE_SIZE;
         jokes = await db.getJokes(pageNum, pageSize, userId);
 
         return res.sendResult(jokes, statusCode.success, "Success");
@@ -45,16 +76,27 @@ router.get("/jokes", async (req, res, next) => {
 router.get("/myjokes", async(req, res, next) => {
     
     let jokes;
+    let pageNum, pageSize;
 
     if(!req.isAuthenticated())
         return res.sendResult(null, 400, "Please sign in account first.");
 
     const user_id = req.user.id;
 
+    if(Number.isInteger(req.query?.pageNumber))
+        pageNum = req.query.pageNumber;
+    else   
+        return res.sendResult(null, statusCode.requestFail, "Please provide validate page number");
+
+
+    if(Number.isInteger(req.query?.pageSize))
+        pageSize = req.query.pageSize;
+    else
+        return res.sendResult(null, statusCode.requestFail, "Please provide validate page size");
+
+
     try{
 
-        const pageNum = req.query?.pageNumber? req.query.pageNumber: DEFAULT_PAGE_NUMBER;
-        const pageSize = req.query?.pageSize? req.query.pageSize: DEFAULT_PAGE_SIZE;
         jokes = await db.getJokesByCreator(user_id, pageNum, pageSize);
   
 
@@ -73,12 +115,21 @@ router.get("/savedjokes", async (req, res, next) => {
 
      const user_id = req.user.id;
 
+    if(Number.isInteger(req.query?.pageNumber))
+        pageNum = req.query.pageNumber;
+    else   
+        return res.sendResult(null, statusCode.requestFail, "Please provide validate page number");
+
+
+    if(Number.isInteger(req.query?.pageSize))
+        pageSize = req.query.pageSize;
+    else
+        return res.sendResult(null, statusCode.requestFail, "Please provide validate page size");
+
+
     try{
-        const pageNum = req.query?.pageNumber? req.query.pageNumber: DEFAULT_PAGE_NUMBER;
-        const pageSize = req.query?.pageSize? req.query.pageSize: DEFAULT_PAGE_SIZE;
         const jokes = await db.getSavedJokes(user_id, pageNum, pageSize);
   
-
         return res.sendResult(jokes, statusCode.success, "Success");
 
     }catch(err){
@@ -173,5 +224,68 @@ router.delete("/joke", async (req, res, next) => {
     }
 });
 
+router.get("/testjokes", async (req, res, next) => {
+    if(!req.isAuthenticated())
+        return res.sendResult(null, statusCode.requestFail, "Please sign in account first.");
+
+    let jokes;
+    let userId = null;
+
+    if(req.isAuthenticated())
+        userId = req.user.id;
+
+    try{
+
+        const pageNum = req.query?.pageNumber? req.query.pageNumber: DEFAULT_PAGE_NUMBER;
+        const pageSize = req.query?.pageSize? req.query.pageSize: DEFAULT_PAGE_SIZE;
+        jokes = await db.getTestJoke(userId, pageNum, pageSize);
+
+        return res.sendResult(jokes, statusCode.success, "Success");
+
+    }catch(err){
+        console.error(err);
+        return res.sendResult(null, statusCode.serverProblem, "Server has problem. Cannot retrieve jokes");
+    }
+});
+
+router.get("/jokescount", async (req,res, next)=> {
+
+    let result, userId;
+    const type = req.query?.type;
+    
+
+    if(req.isAuthenticated())
+        userId = req.user.id;
+
+    try{
+        if(!type){
+            result = await db.getCountOfAllJokes();
+
+        }else if(type == "bookmark"){
+            if(!userId)
+                return res.sendResult(null, statusCode.requestFail, "Please sign in account first.");
+
+            result = await db.getCountOfBookmarkedJokes(userId);
+
+        }else if(type == "created"){
+            if(!userId)
+                return res.sendResult(null, statusCode.requestFail, "Please sign in account first.");
+
+            result = await db.getCountOfcreatededJokes(userId);
+
+        }else{
+            return res.sendResult(null, statusCode.requestFail, "Not such count");
+
+        }
+
+        return res.sendResult(result, statusCode.success, "success");
+
+    }catch(err){
+        console.error(err);
+        return res.sendResult(null, statusCode.serverProblem, "Server has problem.");
+    }
+
+
+});
 
 export default router;

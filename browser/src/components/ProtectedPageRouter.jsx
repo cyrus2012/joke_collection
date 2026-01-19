@@ -4,10 +4,10 @@ import UserContext from "../context/UserContext.jsx";
 
 function ProtectedPageRouter(){
 
-  const user = useContext(UserContext);
+    const user = useContext(UserContext);
 
 
-  return user? <Outlet /> : (<Navigate to="/signin" replace={true} />);
+    return user? <Outlet /> : (<Navigate to="/signin" replace={true} />);
 
 }
 

@@ -37,6 +37,10 @@ nav{
     font-size: 2em;
 }
 
+.bookmarkIcon:hover {
+    background-color: lightgray;
+}
+
 .trashIcon {
     font-size: 2em;
 }
