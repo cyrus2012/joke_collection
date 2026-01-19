@@ -47,7 +47,7 @@ router.post("/login", passport.authenticate("local",{failureRedirect:"/loginfail
         console.log(`User '${req.user.username}' has logined.`);
         //console.log(req.sessionID);
 
-        return res.sendResult(req.user.username, statusCode.success, "login success");
+        return res.sendResult({username: req.user.username}, statusCode.success, "login success");
     }
 );
 

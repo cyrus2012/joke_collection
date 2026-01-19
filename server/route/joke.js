@@ -126,10 +126,14 @@ router.post("/savedjokes", async (req, res, next) => {
     if(!req.isAuthenticated())
         return res.sendResult(null, statusCode.requestFail, "Please sign in account first.");
 
-    if(!req.body.jokeId)
+    if(!req.body?.jokeId)
         return res.sendResult(null, statusCode.requestFail, "Please provide jokeId");
     
     try{
+        const joke = await db.getJokeById(req.body?.jokeId);
+        if(!joke)
+            return res.sendResult(null, statusCode.requestFail, `Joke with id ${req.body.jokeId} does not exit`);
+
         const result = await db.addBookmark(req.user.id, req.body.jokeId);
         return res.sendResult(null, statusCode.success, "success");
     }catch(err){
@@ -159,11 +163,18 @@ router.delete("/savedjokes", async (req, res, next) => {
 });
 
 
-router.post("/create", async (req, res, next) => {
+router.post("/joke", async (req, res, next) => {
     
     if(!req.isAuthenticated())
         return res.sendResult(null, statusCode.requestFail, "Please sign in account first.");
     
+    if(!req.body?.title)
+        return res.sendResult(null, statusCode.requestFail, "Please provide title.");
+
+    if(!req.body?.content)
+        return res.sendResult(null, statusCode.requestFail, "Please provide content.");
+
+
     const today = new Date();
 
     const joke = {

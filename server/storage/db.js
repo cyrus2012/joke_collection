@@ -88,6 +88,14 @@ async function getJokesByCreator(creator_id, pageNum, pageSize){
 }
 
 
+async function getJokeById(jokeId){
+    if(!jokeId)
+        return null;
+
+    const result = await query("SELECT * FROM jokes WHERE id= $1", [jokeId]);
+    return result.rows[0];
+}
+
 async function addJoke(joke){
 
     const result = await query("INSERT INTO jokes (creator, created_at, title, content, category_id) VALUES ($1, $2, $3, $4, $5) RETURNING id",
@@ -197,5 +205,5 @@ async function getCountOfBookmarkedJokes(userId){
 }
 
 
-export default { getUserRecordByName, registerUserRecord, getJokes, addJoke, deleteJoke, getJokesByCreator,
+export default { getUserRecordByName, registerUserRecord, getJokes, getJokeById, addJoke, deleteJoke, getJokesByCreator,
     addBookmark, deleteBookmark, getSavedJokes, getTestJoke, getCountOfAllJokes, getCountOfcreatededJokes, getCountOfBookmarkedJokes };
