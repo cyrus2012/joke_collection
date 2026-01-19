@@ -2,6 +2,7 @@ import { useState } from "react";
 import axiosInstance from "../axiosInstance.js";
 import statusCode from "../statusCode.js";
 import MyCreatedPost from "../components/MyCreatedPost.jsx";
+import PageNavigation from "../components/PageNavigation.jsx";
 
 function MyJokes(){
 
@@ -47,11 +48,14 @@ function MyJokes(){
     }
 
     function deleteJoke(jokeId){
-        
+        /*
         if(jokesList.length > 0){
             jokesList = jokesList.filter( (joke) => joke.props.id != jokeId);
             setJokes(jokesList);
         }
+        */
+        setUpTotalPage(DEFAULT_PAGE_SIZE);
+        getMyJokes(currentPage, DEFAULT_PAGE_SIZE);
 
     }
 
@@ -105,6 +109,9 @@ function MyJokes(){
  
     return (
         <div className="container">
+            <div className="mt-2 d-flex justify-content-end">
+                <PageNavigation totalPage={totalPage} currentPage={currentPage} onSwitchPage={onSwitchPage}/>
+            </div>
             {jokes}
         </div>
     )
