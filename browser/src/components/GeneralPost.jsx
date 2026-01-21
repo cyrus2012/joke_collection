@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import JokeArticle from "./JokeArticle";
 import axiosInstance from "../axiosInstance.js";
 import statusCode from "../statusCode";
@@ -8,16 +8,20 @@ function GeneralPost(props){
 
     const currentUser = useContext(UserContext);
 
-    let isBookmared = currentUser? props.isBookmarked : false;
+    //let isBookmared = currentUser? props.isBookmarked : false;
+    const [isBookmared, setIsBookmarked] = useState(currentUser? props.isBookmarked : false);
+
+
+    useEffect(() => {
+        setIsBookmarked(currentUser? props.isBookmarked : false);
+    }, [currentUser]);
+
 
     async function toggleBookmark(event){
         event.preventDefault();
         
         const icon = event.target;
-        icon.setAttribute("disabled", "disabled");        
-
-        //const isBookmarked = icon.classList.contains("bi-bookmark")? false : true;
-        
+        icon.setAttribute("disabled", "disabled");             
 
         try{
             let result;
@@ -27,9 +31,10 @@ function GeneralPost(props){
                 result = await axiosInstance.delete("/savedjokes", {data: { jokeId:props.id }} );
 
                 if(result.data.statusCode == statusCode.success){
-                    icon.classList.add("bi-bookmark");
-                    icon.classList.remove("bi-bookmark-fill");
-                    isBookmared = false;
+                    //icon.classList.add("bi-bookmark");
+                    //icon.classList.remove("bi-bookmark-fill");
+                    //isBookmared = false;
+                    setIsBookmarked(false);
                     if(props.removeBookmarkPost)
                         props.removeBookmarkPost(props.id);
                 }else{
@@ -42,9 +47,10 @@ function GeneralPost(props){
                 result = await axiosInstance.post("/savedjokes", { jokeId:props.id });
                 
                 if(result.data.statusCode == statusCode.success){
-                    icon.classList.add("bi-bookmark-fill");
-                    icon.classList.remove("bi-bookmark");
-                    isBookmared = true;
+                    //icon.classList.add("bi-bookmark-fill");
+                    //icon.classList.remove("bi-bookmark");
+                    //isBookmared = true;
+                    setIsBookmarked(true);
                  }else{
                     window.alert(result.data.message);
                 }
@@ -57,15 +63,7 @@ function GeneralPost(props){
         icon.removeAttribute("disabled");
     }
 
-/*
-    return (
-        <div className="d-flex border border-2 border-info border-rounded-2 mt-2 p-2">
-            <JokeArticle className="flex-grow-1" id={props.id} title={props.title} content={props.content}/>   
-            { isBookmared? <i className="bi bi-bookmark-fill bookmarkIcon " onClick={toggleBookmark} ></i> :
-                    <i className="align-self-start bi bi-bookmark bookmarkIcon" onClick={toggleBookmark} ></i>}
-        </div>
-    )
-*/
+
     return (
         <div className="d-flex border border-2 border-info border-rounded-2 mt-2 p-2">
             <JokeArticle className="flex-grow-1" id={props.id} title={props.title} content={props.content}/>   

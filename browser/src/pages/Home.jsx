@@ -31,7 +31,7 @@ function Home(){
                 if(recipt.data.length == 0){
                     setJokes(<h2>No Jokes in database.</h2>);
                 }else{
-                    //console.log(recipt);
+                    //console.log(recipt.data);
                     const jokesList = recipt.data.map((element) => {
                         const isBookmarked = element.user_id? true : false;
                         return (
