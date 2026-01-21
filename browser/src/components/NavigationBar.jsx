@@ -1,9 +1,11 @@
-import { NavLink, Link, useNavigate} from 'react-router-dom';
+import { NavLink, useNavigate} from 'react-router-dom';
 import { useContext } from 'react';
 import UserContext from '../context/UserContext.jsx';
 import UserSetterContext from '../context/UserSetterContext.jsx';
 //import axios from 'axios';
 import axiosInstance from "../axiosInstance.js"
+
+
 
 function NavigationBar(){
 
@@ -52,7 +54,30 @@ function NavigationBar(){
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>
-                <div className="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                <div className="navbar-collapse collapse justify-content-end" id="navbarSupportedContent" >
+                    <ul className="navbar-nav ">
+                        {!currentUser && <li className="nav-item"><a href="/signup" className="nav-link" >Sign Up</a></li>}
+                        {!currentUser && <li className="nav-item"><a href="/signin" className="nav-link" >Sign In</a></li>}
+                        
+                        {currentUser && <li className="nav-item"><a href="/create" className="nav-link">Add joke</a></li>}
+                        {currentUser && <li className="nav-item"><a href="/myjokes" className="nav-link">My jokes</a></li>}
+                        {currentUser && <li className="nav-item"><a href="/savedlist" className="nav-link">Saved jokes</a></li>}
+                        {currentUser && <li className="nav-item"><a href="#" onClick={signOut} className="nav-link">Sign Out</a></li>}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    );
+
+    /*
+    return (
+        <nav className="navbar navbar-expand-sm text-bg-primary" data-bs-theme="dark">
+            <div className="container-fluid">
+                <NavLink to="/" className="navbar-brand"><span>&#128515;</span>Joke Collection</NavLink>
+                <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span className="navbar-toggler-icon"></span>
+                </button>
+                <div className="navbar-collapse collapse justify-content-end" id="navbarSupportedContent" >
                     <ul className="navbar-nav ">
                         {!currentUser && <li className="nav-item"><NavLink to="/signup" className="nav-link" >Sign Up</NavLink></li>}
                         {!currentUser && <li className="nav-item"><NavLink to="/signin" className="nav-link" >Sign In</NavLink></li>}
@@ -66,6 +91,7 @@ function NavigationBar(){
             </div>
         </nav>
     );
+    */
 
 }
 
