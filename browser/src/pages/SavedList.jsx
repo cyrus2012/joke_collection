@@ -20,9 +20,9 @@ function SavedList(){
 
         if(currentPage.current > pageTotal){ 
             currentPage.current = pageTotal;
-            await getMyBookMarkedJokes(pageTotal, DEFAULT_PAGE_SIZE);
-        }else
-            await getMyBookMarkedJokes(currentPage.current, DEFAULT_PAGE_SIZE);
+        }
+        
+        await getMyBookMarkedJokes(currentPage.current, DEFAULT_PAGE_SIZE);
     }
 
     async function removedBookmarkPost(){

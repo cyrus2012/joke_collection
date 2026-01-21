@@ -1,9 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 
 function PageNavigation(props){
 
     const [currentPage, setCurrentPage] = useState(props.currentPage);
+
+    useEffect(() => {
+        setCurrentPage(props.currentPage);
+    }, [props.totalPage]);
+
 
     function isPositiveInteger(string){
         const regExp = new RegExp("^[1-9][0-9]*$");

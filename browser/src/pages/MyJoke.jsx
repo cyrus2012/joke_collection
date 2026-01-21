@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import axiosInstance from "../axiosInstance.js";
 import statusCode from "../statusCode.js";
 import MyCreatedPost from "../components/MyCreatedPost.jsx";
@@ -8,7 +8,8 @@ function MyJokes(){
 
     const [jokes, setJokes] = useState(null);
     
-    const [currentPage, setCurrentPage] = useState(0);
+    //const [currentPage, setCurrentPage] = useState(0);
+    const currentPage = useRef(0);
     const [totalPage, setTotalPage] = useState(0);
 
     const DEFAULT_PAGE_SIZE = 5;
@@ -47,15 +48,14 @@ function MyJokes(){
                 
     }
 
-    function refreshPage(){
-        /*
-        if(jokesList.length > 0){
-            jokesList = jokesList.filter( (joke) => joke.props.id != jokeId);
-            setJokes(jokesList);
+    async function refreshPage(){
+
+        const newTotalPage = await setUpTotalPage(DEFAULT_PAGE_SIZE);
+        if(currentPage.current > newTotalPage){
+            currentPage.current = newTotalPage;
         }
-        */
-        setUpTotalPage(DEFAULT_PAGE_SIZE);
-        getMyJokes(currentPage, DEFAULT_PAGE_SIZE);
+
+        await getMyJokes(currentPage.current, DEFAULT_PAGE_SIZE);
 
     }
 
@@ -88,30 +88,32 @@ function MyJokes(){
         
         const page = Math.ceil(jokesCount / pageSize);
                 
-        console.log(`total jokes: ${jokesCount}`);
-        console.log(`total page: ${page}`);
         setTotalPage(page);
+
+        return page;
     }
 
 
     function onSwitchPage(pageNumber){
         console.log(`switch to page ${pageNumber}`);
-        setCurrentPage(pageNumber);
+        //setCurrentPage(pageNumber);
+        currentPage.current = pageNumber;
         getMyJokes(pageNumber, DEFAULT_PAGE_SIZE);
     }
 
 
-    if(currentPage == 0){
+    if(currentPage.current == 0){
         console.log("page reloaded");
-        setCurrentPage(1);
+        //setCurrentPage(1);
+        currentPage.current = 1;
         setUpTotalPage(DEFAULT_PAGE_SIZE);
-        getMyJokes(currentPage, DEFAULT_PAGE_SIZE);
+        getMyJokes(currentPage.current, DEFAULT_PAGE_SIZE);
     }
  
     return (
         <div className="container">
             <div className="mt-2 d-flex justify-content-end">
-                <PageNavigation totalPage={totalPage} currentPage={currentPage} onSwitchPage={onSwitchPage}/>
+                <PageNavigation totalPage={totalPage} currentPage={currentPage.current} onSwitchPage={onSwitchPage}/>
             </div>
             {jokes}
         </div>
