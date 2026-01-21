@@ -204,6 +204,11 @@ async function getCountOfBookmarkedJokes(userId){
     return result.rows[0];
 }
 
+async function deleteAllBookmarkByJokeId(jokeId){
+    const result = await query("DELETE FROM bookmark WHERE joke_id = $1", [jokeId]);
 
-export default { getUserRecordByName, registerUserRecord, getJokes, getJokeById, addJoke, deleteJoke, getJokesByCreator,
-    addBookmark, deleteBookmark, getSavedJokes, getTestJoke, getCountOfAllJokes, getCountOfcreatededJokes, getCountOfBookmarkedJokes };
+    return result.rows[0];
+}
+
+export default { getUserRecordByName, registerUserRecord, getJokes, getJokeById, addJoke, deleteJoke, getJokesByCreator, addBookmark, 
+    deleteBookmark, getSavedJokes, getTestJoke, getCountOfAllJokes, getCountOfcreatededJokes, getCountOfBookmarkedJokes, deleteAllBookmarkByJokeId };

@@ -208,6 +208,7 @@ router.delete("/joke", async (req, res, next) => {
         return res.sendResult(null, statusCode.requestFail, "Please provide jokeId");
     
     try{
+        db.deleteAllBookmarkByJokeId(req.body.jokeId);
         const result = await db.deleteJoke(req.user.id, req.body.jokeId);
         console.log(`User id ${req.user.id} has deleted joke id ${req.body.jokeId} `);
         return res.sendResult(null, statusCode.success, "delete joke success");
