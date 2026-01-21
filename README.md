@@ -61,6 +61,8 @@ Server return an object in JSON format to the client. The object has 3 property
 | statusCode | indicate the request fulfilled(200), fail by incorrect information from client (400) or server problem (500) |
 | message | a string that descript the failure reason |
 
+The picture below is the operation and response from server in software **Postman**.
+
 ### POST /login
 Client provide credentials (username and password) and server return username in property data if authentication success. \
 **credential** \

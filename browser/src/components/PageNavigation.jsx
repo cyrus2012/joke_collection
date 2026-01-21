@@ -12,6 +12,7 @@ function PageNavigation(props){
 
     function onPageChange(event){
         setCurrentPage(event.target.value);
+        //props.onPageValueChange(event.target.value);
     }
 
     function switchPage(event){

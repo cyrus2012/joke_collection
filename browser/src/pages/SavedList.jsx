@@ -1,64 +1,32 @@
 //import axios from "axios";
 import axiosInstance from "../axiosInstance.js";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useRef } from "react";
 import statusCode from "../statusCode.js";
 import GeneralPost from "../components/GeneralPost.jsx";
 import PageNavigation from "../components/PageNavigation.jsx";
 
 function SavedList(){
     const [jokes, setJokes] = useState(null);
-    const [currentPage, setCurrentPage] = useState(0);
+    const currentPage = useRef(0);
     const [totalPage, setTotalPage] = useState(0);
 
     const DEFAULT_PAGE_SIZE = 5;
     
-    let page = 0, totalpage = 0;
-    
-
     let jokesList = [];
 
     async function refreshPage(){
-        console.log("refresh page " + currentPage);
+        console.log("refresh page " + currentPage.current);
         const pageTotal = await setUpTotalPage(DEFAULT_PAGE_SIZE);
-        //getMyBookMarkedJokes(currentPage, DEFAULT_PAGE_SIZE);
 
-        if(currentPage > pageTotal){ 
-            setCurrentPage(pageTotal);
+        if(currentPage.current > pageTotal){ 
+            currentPage.current = pageTotal;
             await getMyBookMarkedJokes(pageTotal, DEFAULT_PAGE_SIZE);
         }else
-            await getMyBookMarkedJokes(currentPage, DEFAULT_PAGE_SIZE);
-
-       //getMyBookMarkedJokes(currentPage, DEFAULT_PAGE_SIZE);
+            await getMyBookMarkedJokes(currentPage.current, DEFAULT_PAGE_SIZE);
     }
 
-
-    const refreshPageAfterRemovedBookmarkPost = useCallback(async () => {
-        console.log("callback refresh page " + currentPage);
-        const pageTotal = await setUpTotalPage(DEFAULT_PAGE_SIZE);
-        //getMyBookMarkedJokes(currentPage, DEFAULT_PAGE_SIZE);
-
-        if(currentPage > pageTotal){ 
-            setCurrentPage(pageTotal);
-            await getMyBookMarkedJokes(pageTotal, DEFAULT_PAGE_SIZE);
-        }else
-            await getMyBookMarkedJokes(currentPage, DEFAULT_PAGE_SIZE);
-
-    }, [currentPage]);
-
     async function removedBookmarkPost(){
-        refreshPage();
-/* 
-        const pageTotal = await setUpTotalPage(DEFAULT_PAGE_SIZE);
-
-        console.log("new total: " + pageTotal);
-        console.log("current page state: " + currentPage);
-
-        if(currentPage > pageTotal){
-            setCurrentPage(pageTotal);
-            await getMyBookMarkedJokes(pageTotal, DEFAULT_PAGE_SIZE);
-        }else
-            await getMyBookMarkedJokes(currentPage, DEFAULT_PAGE_SIZE);
-             */
+        await refreshPage();
     }
 
     async function getMyBookMarkedJokes(pageNumber, pageSize){
@@ -74,13 +42,12 @@ function SavedList(){
                     setJokes(<h2>No saved Jokes.</h2>);
                 }else{
                     //console.log(recipt);
-                    console.log("render GeneralPost now. Current Page: " + currentPage);
                     jokesList = recipt.data.map((element) => {
                         const isBookmarked = true;
                         return (
                             <GeneralPost className="mt-3" key={element.id} id={element.id}
                                 title={element.title} content={element.content} isBookmarked={isBookmarked}
-                                removeBookmarkPost={refreshPageAfterRemovedBookmarkPost} />
+                                removeBookmarkPost={removedBookmarkPost} />
                         );
                     });
 
@@ -94,11 +61,6 @@ function SavedList(){
         }catch(err){
             console.error(err);
         }
-
-    }
-
-    function updateJokesList(jokes){
-        
 
     }
 
@@ -130,9 +92,6 @@ function SavedList(){
         
         const pageCount = Math.ceil(jokesCount / pageSize);
         
-        console.log(`total jokes: ${jokesCount}`);
-        console.log(`total page: ${pageCount}`);
-        totalpage = pageCount;
         setTotalPage(pageCount);
         return pageCount;
     }
@@ -140,29 +99,20 @@ function SavedList(){
 
     async function onSwitchPage(pageNumber){
         console.log(`switch to page ${pageNumber}`);
-        page = pageNumber;
-        setCurrentPage(pageNumber);
+        currentPage.current = pageNumber;
         await getMyBookMarkedJokes(pageNumber, DEFAULT_PAGE_SIZE);
     }
 
-
-    useEffect(() => {
-        console.log("current page state now update to " + currentPage); 
-    },[currentPage]);
-
-    if(currentPage === 0){
-        console.log("savedList page reloaded");
-        setCurrentPage(1);
-        page = 1;
+    if(currentPage.current === 0){
+        currentPage.current = 1;
         setUpTotalPage(DEFAULT_PAGE_SIZE);
-        //getMyBookMarkedJokes(currentPage, DEFAULT_PAGE_SIZE);
-        getMyBookMarkedJokes(page, DEFAULT_PAGE_SIZE);
+        getMyBookMarkedJokes(currentPage.current, DEFAULT_PAGE_SIZE);
     }
 
     return (
         <div className="container">
             <div className="mt-2 d-flex justify-content-end">
-                <PageNavigation totalPage={totalPage} currentPage={currentPage} onSwitchPage={onSwitchPage}/>
+                <PageNavigation totalPage={totalPage} currentPage={currentPage.current} onSwitchPage={onSwitchPage}/>
             </div>
             {jokes}
         </div>
